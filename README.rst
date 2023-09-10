@@ -53,7 +53,7 @@ Protocol buffers links
 * `Python tutorial <https://protobuf.dev/getting-started/pythontutorial/>`_;
 * `Python API <https://googleapis.dev/python/protobuf/latest/>`_;
 * `Generated code guide <https://protobuf.dev/reference/python/python-generated/>`_;
-* `'.proto' file delivered by Sass<https://github.com/sass/sass/blob/main/spec/embedded_sass.proto>`_;
+* `Proto file delivered by Sass<https://github.com/sass/sass/blob/main/spec/embedded_sass.proto>`_;
 
 
 Plan
