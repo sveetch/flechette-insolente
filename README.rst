@@ -38,6 +38,10 @@ dart-sass to be run from a Node.js library), i understood that:
 * Once runned we dialog with compiler using the proctocol through STDIN commands and it
   will answer throught STDOUT, this is the only way to reach and instruct all compiler
   feature;
+* Since dialog with protocol is normalized using
+  `Protocol buffers <https://protobuf.dev/getting-started/pythontutorial/>`_, that is
+  especially using a ``*.proto`` file to descript communication packets;
+
 
 Plan
 ****
