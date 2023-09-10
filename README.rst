@@ -39,9 +39,19 @@ dart-sass to be run from a Node.js library), i understood that:
   will answer throught STDOUT, this is the only way to reach and instruct all compiler
   feature;
 * Since dialog with protocol is normalized using
-  `Protocol buffers <https://protobuf.dev/getting-started/pythontutorial/>`_, that is
-  especially using a ``*.proto`` file to descript communication packets;
+  Protocol buffers (see links section below), that is using a ``*.proto`` file to
+  descript communication packets;
 
+
+Protocol buffers links
+**********************
+
+* `Protobuf library repository <https://github.com/protocolbuffers/protobuf>`_;
+* `Official package on Pypi <https://pypi.org/project/protobuf/>`_ (include precompiled
+  protobuf);
+* `Python tutorial <https://protobuf.dev/getting-started/pythontutorial/>`_;
+* `Python API <https://googleapis.dev/python/protobuf/latest/>`_;
+* `Generated code guide <https://protobuf.dev/reference/python/python-generated/>`_;
 
 Plan
 ****
