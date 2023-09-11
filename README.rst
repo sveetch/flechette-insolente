@@ -18,7 +18,7 @@ Dependencies
 * `Python`_>=3.8;
 * `Click`_>=8.0;
 * `Protobuf`_>=24.0;
-
+* (dev only) ``libprotoc>=24.2`` to build Python module for ``*.proto`` file;
 
 Goal
 ****
@@ -121,5 +121,3 @@ On-going work notes
 * At least, the basic usage with command arguments seems a possible escape of the hell
   of Protocol buffers, but it would need to checked on performance. Also command and
   popen would be less flexible;
-
-**On hold, i need to find someone with a recent machine which have protoc>=3.19.0 to continue explore.**
