@@ -97,4 +97,29 @@ On-going work notes
 * [Proposal] Package should include all dart-sass plateform builds;
 * [Hint] Python module for proto file don't need to be build on package install, it just
   have to fit to proto file version according to shipped dart-sass build version;
+* Just tried to import classes from proto Python module and it fails with: ::
 
+    Traceback (most recent call last):
+    File "/home/emencia/Projects/Apps/flechette-insolente/dartsass/sass_version.py", line 2, in <module>
+        from dartsass.embedded_sass_pb2 import InboundMessage, OutboundMessage
+    File "/home/emencia/Projects/Apps/flechette-insolente/dartsass/embedded_sass_pb2.py", line 33, in <module>
+        _descriptor.EnumValueDescriptor(
+    File "/home/emencia/Projects/Apps/flechette-insolente/.venv/lib/python3.10/site-packages/google/protobuf/descriptor.py", line 796, in __new__
+        _message.Message._CheckCalledFromGeneratedFile()
+    TypeError: Descriptors cannot not be created directly.
+    If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc >= 3.19.0.
+    If you cannot immediately regenerate your protos, some other possible workarounds are:
+    1. Downgrade the protobuf package to 3.20.x or lower.
+    2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).
+
+* So finally, with package protobuf 24.x, we need to compile proto file with
+  protoc>=3.19.0;
+* It makes me wonder how hard it will be to maintain this cohesion between
+  flechette-insolente, protoc, protobuf and dart-sass. It involves many package
+  versions that are not guaranteed to keep long support. Especially, dart-sass that
+  seems to preview many breaking changes.
+* At least, the basic usage with command arguments seems a possible escape of the hell
+  of Protocol buffers, but it would need to checked on performance. Also command and
+  popen would be less flexible;
+
+**On hold, i need to find someone with a recent machine which have protoc>=3.19.0 to continue explore.**
