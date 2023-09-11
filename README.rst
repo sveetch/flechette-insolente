@@ -59,7 +59,9 @@ Protocol buffers links
 * `Python API <https://googleapis.dev/python/protobuf/latest/>`_;
 * `Generated code guide <https://protobuf.dev/reference/python/python-generated/>`_;
 * `Proto file delivered by Sass <https://github.com/sass/sass/blob/main/spec/embedded_sass.proto>`_;
-
+* `py-dart-sass <https://github.com/dumdoo/py-dart-sass>`_ a package which wrapped
+  dart-sass (a version from 2022) without using protobuf (only using command argument).
+  Nice but seems outdated and abandoned;
 
 Plan
 ****
@@ -92,3 +94,7 @@ On-going work notes
 
 * I've filled an issue to Sass repo about
   `libprotoc version support <https://github.com/sass/sass/issues/3685>`_;
+* [Proposal] Package should include all dart-sass plateform builds;
+* [Hint] Python module for proto file don't need to be build on package install, it just
+  have to fit to proto file version according to shipped dart-sass build version;
+
