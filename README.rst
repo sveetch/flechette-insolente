@@ -5,7 +5,7 @@
 .. _Protobuf: https://pypi.org/project/protobuf/
 
 ===================
-Flêchette insolente
+Flèchette insolente
 ===================
 
 Named after french version of `Dart Sass`_, this is a laboratory for research and
