@@ -7,8 +7,8 @@ History
 Version 0.3.0 - Unreleased
 **************************
 
-A new attempt which will simply used the classic popen way to use included dart-sass
-executable.
+A new attempt which will simply used the classic subprocess way to use included
+dart-sass executable.
 
 
 Version 0.2.0 - Unreleased
