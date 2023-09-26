@@ -8,23 +8,30 @@ from .plateform_build import DART_SASS_EXEC
 
 
 class DebugExecVariance:
+    """
+    Temporary debug stuff used in exec_dev command
+    """
     def exit_1(self):
-        result = self._exec(cmd_name="./exit_1_sample.sh")
+        basepath = Path(dartsass.__file__).parent.parent / "tests/fixture_datas/scripts"
+        result = self._exec(cmd_name=str(basepath / "./exit_1_sample.sh"))
 
         return result
 
     def exit_2(self):
-        result = self._exec(cmd_name="./exit_2_sample.sh")
+        basepath = Path(dartsass.__file__).parent.parent / "tests/fixture_datas/scripts"
+        result = self._exec(cmd_name=str(basepath / "./exit_2_sample.sh"))
 
         return result
 
     def colored_error(self):
-        result = self._exec(cmd_name="./error_colored_sample.py")
+        basepath = Path(dartsass.__file__).parent.parent / "tests/fixture_datas/scripts"
+        result = self._exec(cmd_name=str(basepath / "./error_colored_sample.py"))
 
         return result
 
     def sleepy_error(self):
-        result = self._exec(cmd_name="./error_sleepy_script.py")
+        basepath = Path(dartsass.__file__).parent.parent / "tests/fixture_datas/scripts"
+        result = self._exec(cmd_name=str(basepath / "./error_sleepy_script.py"))
 
         return result
 
@@ -55,6 +62,8 @@ class DartSassCompiler(DebugExecVariance):
         """
         Execute command.
         """
+        # One can override from kwargs the default executable command path to use
+        # another one, mostly used for debug/test, maybe not accurate to keep it
         cmd_name = kwargs.get("cmd_name", DART_SASS_EXEC)
 
         try:
@@ -90,5 +99,33 @@ class DartSassCompiler(DebugExecVariance):
 
     def version(self):
         result = self._exec("--version")
+
+        return result.stdout.strip()
+
+    def compile(self, source, destination, load_paths=None):
+        """
+        sass --load-path=node_modules ./scss:../project/static-sources/css/
+
+        Decomposed:
+            sass
+                --load-path=node_modules
+                ./scss:../project/static-sources/css/
+
+        Where
+            sass
+                --load-path=PATH
+                source(file|dir):destination(file|dir)
+
+        """
+        cms_args = []
+        load_paths = load_paths or []
+
+        if load_paths:
+            for path in load_paths:
+                cms_args.extend(["--load-path", path])
+
+        cms_args.extend([source, destination])
+
+        result = self._exec(*cms_args)
 
         return result.stdout.strip()

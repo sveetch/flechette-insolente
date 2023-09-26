@@ -31,6 +31,20 @@ def get_plateform():
 
     Found names from Python plateform are normalized to the dart-sass plateform names.
 
+    Tested plateforms: ::
+
+        fred % python
+        Python 3.9.9 (main, Jul 8 2022, 14:53:19)
+        [Clang 13.0.0 (clang-1300.0.29.3)] on darwin
+        system: Darwin
+        machine: x86_64
+
+        nico % python
+        Python 3.8.16 (default, May 25 2023, 15:27:36)
+        [Clang 14.0.3 (clang-1403.0.22.14.1)] on darwin
+        system: Darwin
+        machine: arm64
+
     Returns:
         tuple: First item will be system (OS) and second item will be the machine
         (CPU architecture).
@@ -54,7 +68,7 @@ def get_sass_executable():
 
     Default behavior
 
-    TODO: Allow to override this from environment variable.
+    TODO: Allow to directly get executable path from an environment variable.
 
     Returns:
         Path: Path to executable file.

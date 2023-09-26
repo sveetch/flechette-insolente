@@ -23,11 +23,11 @@ def execdev_command(context):
 
     try:
         print(
-            compiler.exit_1()
+            "result:", compiler.exit_1()
         )
     except RunnedCommandError as e:
-        print(e.get_payload_details())
-        print(e)
+        print("detail:", e.get_payload_details())
+        print("error:", e)
 
     print()
     print("-"*40)
@@ -35,11 +35,11 @@ def execdev_command(context):
 
     try:
         print(
-            compiler.exit_2()
+            "result:", compiler.exit_2()
         )
     except RunnedCommandError as e:
-        print(e.get_payload_details())
-        print(e)
+        print("detail:", e.get_payload_details())
+        print("error:", e)
 
     print()
     print("-"*40)
@@ -47,11 +47,11 @@ def execdev_command(context):
 
     try:
         print(
-            compiler.colored_error()
+            "result:", compiler.colored_error()
         )
     except RunnedCommandError as e:
-        print(e.get_payload_details())
-        print(e)
+        print("detail:", e.get_payload_details())
+        print("error:", e)
 
     print()
     print("-"*40)
@@ -60,11 +60,11 @@ def execdev_command(context):
     compiler = DartSassCompiler(command_timeout=1)
     try:
         print(
-            compiler.sleepy_error()
+            "result:", compiler.sleepy_error()
         )
     except RunnedCommandError as e:
-        print(e.get_payload_details())
-        print(e)
+        print("detail:", e.get_payload_details())
+        print("error:", e)
 
     print()
     print("-"*40)
@@ -77,7 +77,7 @@ def execdev_command(context):
         error = e
 
     if error:
-        print(error.get_payload_details())
-        print(error)
+        print("detail:", error.get_payload_details())
+        print("error:", error)
     else:
-        print(compiler_version)
+        print("result:", compiler_version)

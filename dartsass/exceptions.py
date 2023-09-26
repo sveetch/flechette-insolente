@@ -25,19 +25,7 @@ class RunnedCommandError(FlechetteInsolenteBaseException):
     """
     A special error related to an executed commandline which failed.
 
-    Attribute ``foo`` contains a dict of runned command details.
-
-            print("ERROR")
-            print("- Failed cmd: {}".format(e.cmd))
-            print("- Returned code: {}".format(e.returncode))
-            print("- Captured Stdout until failure:")
-            print(e.stdout)
-            print("- Captured Stderr:")
-            print(e.stderr if e.stderr else "NONE")
-
-    Payload should be ready to include either 'subprocess.TimeoutExpired' or
-    'subprocess.CalledProcessError' details (differs with attributes respectively
-    'timeout' and 'returncode')
+    Attribute ``error_payload`` contains a dict of runned command details.
 
     Keyword Arguments:
         error_payload (dict): A dictionnary of command response error details. It
