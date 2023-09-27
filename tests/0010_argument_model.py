@@ -1,138 +1,64 @@
-from pathlib import Path
-
 import pytest
 
-from dartsass.exceptions import AppOperationError
+from dartsass.exceptions import CommandArgumentsError
+from dartsass.compiler.arguments import ArgumentsAbstract
 
 
-class CompilerArgumentsModel:
+def test_arguments_errors(source_structure, settings):
     """
-    Sample usage for source and destination:
-
-    Only source is given as a file, compiled to css into the same dir than source: ::
-
-        trying/
-        ├── bar.css
-        ├── bar.css.map
-        ├── css
-        └── scss
-            └── sample.scss
-
-    Source and destination given as files, packed with ':', CSS compiled at the
-    destination: ::
-
-        $ dartsass/vendor/linux-x64/sass trying/scss/sample.scss:trying/css/foo.css
-        $ tree trying/
-        trying/
-        ├── bar.css
-        ├── bar.css.map
-        ├── css
-        │   ├── foo.css
-        │   └── foo.css.map
-        └── scss
-            └── sample.scss
-
-    Source given as a file and destination as a dir, lead to error,
-    package source/destination must be the same file type: ::
-
-        $ dartsass/vendor/linux-x64/sass trying/scss/sample.scss:trying/css/
-        Error reading trying/css: Cannot open file.
-
-    Source and destination given as directories, All Sass from source dir are compiled
-    to CSS into the given destination dir
-
-        $ dartsass/vendor/linux-x64/sass trying/scss/:trying/css/
-        $ tree trying/
-        trying/
-        ├── bar.css
-        ├── bar.css.map
-        ├── css
-        │   ├── foo.css
-        │   ├── foo.css.map
-        │   ├── sample.css
-        │   └── sample.css.map
-        └── scss
-            └── sample.scss
+    TODO: Possible errors, need more specific excepions to recognize
     """
-    AVAILABLE_ARGUMENTS = {
-        "source": None,
-        "destination": None,
-        "style": "--style",
-        "load_paths": "--load-path",
-    }
-
-    def __init__(self, source, **kwargs):
-        self.cmd_args = []
-        self.destination = None
-
-        self.source = self._validate_source(source)
-
-        destination = kwargs.pop("destination")
-        if destination:
-            self.destination = self._validate_destination(source)
-
-        for name, value in kwargs.items():
-            print("-", name, value)
-            if name not in self.AVAILABLE_ARGUMENTS:
-                raise AppOperationError("Unknowed argument: {}".format(name))
-            else:
-                content = getattr(self, "_validate_{}".format(name))(value)
-                if content:
-                    self.cmd_args.extend(content)
-
-    def __str__(self):
-        print(self.cmd_args)
-        return " ".join(self.cmd_args)
-
-    def _validate_source(self, value):
-        path = Path(value)
-        if not path.exists():
-            raise AppOperationError("Given source path does not exist: {}".format(path))
-
-        return [path]
-
-    def _validate_destination(self, value):
-        return [value]
-
-    def _validate_style(self, value):
-        return [self.AVAILABLE_ARGUMENTS["style"], value]
-
-    def _validate_load_paths(self, value):
-        paths = []
-        for item in value:
-            paths.extend([self.AVAILABLE_ARGUMENTS["load_paths"], item])
-        return paths
-
-
-def test_default_name(scss_structure, settings):
-    """
-    TODO: R&D the model
-    """
-
-    print([i for i in settings.datas_path.iterdir()])
-
     # Source does not exist
-    with pytest.raises(AppOperationError) as excinfo:
-        model = CompilerArgumentsModel(
-            source="foo.css",
+    with pytest.raises(CommandArgumentsError) as excinfo:
+        model = ArgumentsAbstract(
+            "foo.css",
         )
 
     # Invalid argument
-    with pytest.raises(AppOperationError) as excinfo:
-        model = CompilerArgumentsModel(
-            source="foo.css",
+    with pytest.raises(CommandArgumentsError) as excinfo:
+        model = ArgumentsAbstract(
+            "foo.css",
             michou=True
         )
 
-    model = CompilerArgumentsModel(
-        source="foo.css",
-        destination="dist/",
-        load_paths=["../node_modules/bootstrap"],
-        style="expanded",
-        #michou=True
-    )
+
+def test_arguments_success(source_structure, settings):
+    """
+    TODO:
+    Argument model should properly gather valid arguments.
+    """
+    print(source_structure)
     print()
-    print(model)
+    print([i for i in source_structure.iterdir()])
     print()
 
-    assert 1 == 42
+    # Only giving source path
+    model = ArgumentsAbstract(source_structure / "scss/minimal.scss")
+    assert model.cmd_args == ["{}/scss/minimal.scss".format(source_structure)]
+
+    # Giving source as file and destination as directory (model can not validate this
+    # but compiler will raise issue because of incompatible ressource type)
+    model = ArgumentsAbstract(
+        source_structure / "scss/minimal.scss",
+        destination=source_structure / "css",
+    )
+    assert model.cmd_args == [
+        "{}/scss/minimal.scss:{}/css".format(source_structure, source_structure),
+    ]
+
+    # Giving many valid arguments
+    model = ArgumentsAbstract(
+        source_structure / "scss/minimal.scss",
+        destination=(source_structure / "css/"),
+        load_paths=["../node_modules/bootstrap", "foo"],
+        style="expanded",
+    )
+    assert model.cmd_args == [
+        "{}/scss/minimal.scss:{}/css".format(source_structure, source_structure),
+        "--load-path",
+        "../node_modules/bootstrap",
+        "--load-path",
+        "foo",
+        "--style",
+        "expanded"
+    ]

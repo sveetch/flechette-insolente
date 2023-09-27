@@ -21,6 +21,13 @@ class AppOperationError(FlechetteInsolenteBaseException):
     pass
 
 
+class CommandArgumentsError(FlechetteInsolenteBaseException):
+    """
+    Exception for invalid command arguments
+    """
+    pass
+
+
 class RunnedCommandError(FlechetteInsolenteBaseException):
     """
     A special error related to an executed commandline which failed.

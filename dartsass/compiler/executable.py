@@ -3,8 +3,10 @@ from pathlib import Path
 
 import dartsass
 
-from .exceptions import RunnedCommandError
-from .plateform_build import DART_SASS_EXEC
+from ..exceptions import RunnedCommandError
+from ..plateform_build import DART_SASS_EXEC
+
+from .arguments import ArgumentsAbstract
 
 
 class DebugExecVariance:
@@ -36,7 +38,7 @@ class DebugExecVariance:
         return result
 
 
-class DartSassCompiler(DebugExecVariance):
+class ExecutableAbstract(DebugExecVariance):
     """
     This should be the wrapper around dart-sass executable compiler.
 

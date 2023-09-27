@@ -66,14 +66,14 @@ def temp_builds_dir(tmp_path):
 
 
 @pytest.fixture(scope="function")
-def scss_structure(tmp_path, settings):
+def source_structure(tmp_path, settings):
     """
     Copy the Sass source structure into a temporary directory.
 
     Returns:
         Path: The path to the copied structure in temp directory.
     """
-    sample_dirname = "scss"
+    sample_dirname = "sources"
     basic_sample_path = settings.datas_path / sample_dirname
     destination = tmp_path / sample_dirname
 
