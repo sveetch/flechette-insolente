@@ -1,0 +1,5 @@
+$addon_var: "ping" !default;
+
+@mixin addon_tool() {
+    --addon-tool: $addon_var;
+}

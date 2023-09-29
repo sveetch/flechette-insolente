@@ -6,8 +6,6 @@ import dartsass
 from ..exceptions import RunnedCommandError
 from ..plateform_build import DART_SASS_EXEC
 
-from .arguments import ArgumentsAbstract
-
 
 class DebugExecVariance:
     """
@@ -86,7 +84,7 @@ class ExecutableAbstract(DebugExecVariance):
                 "timeout": None,
             })
         except subprocess.TimeoutExpired as e:
-            # NOTE: For unknow reason, TimeoutExpired always keep an empty stdout
+            # NOTE: For unknow reason, TimeoutExpired always have an empty stdout
             raise RunnedCommandError(error_payload={
                 "returncode": None,
                 "cmd": e.cmd,
@@ -98,36 +96,3 @@ class ExecutableAbstract(DebugExecVariance):
             return result
 
         return None
-
-    def version(self):
-        result = self._exec("--version")
-
-        return result.stdout.strip()
-
-    def compile(self, source, destination, load_paths=None):
-        """
-        sass --load-path=node_modules ./scss:../project/static-sources/css/
-
-        Decomposed:
-            sass
-                --load-path=node_modules
-                ./scss:../project/static-sources/css/
-
-        Where
-            sass
-                --load-path=PATH
-                source(file|dir):destination(file|dir)
-
-        """
-        cms_args = []
-        load_paths = load_paths or []
-
-        if load_paths:
-            for path in load_paths:
-                cms_args.extend(["--load-path", path])
-
-        cms_args.extend([source, destination])
-
-        result = self._exec(*cms_args)
-
-        return result.stdout.strip()
