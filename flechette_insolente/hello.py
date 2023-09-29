@@ -2,7 +2,7 @@
 This is a basic hello world module to build greetings either in plain text or
 html fragment.
 """
-from dartsass.exceptions import AppOperationError
+from flechette_insolente.exceptions import AppOperationError
 
 
 class HelloBase:

@@ -1,8 +1,6 @@
 #!/home/emencia/Projects/Apps/flechette-insolente/.venv/bin/python
 
 if __name__ == "__main__":
-    import logging
-
     import click
 
     from dartsass.logger import init_logger

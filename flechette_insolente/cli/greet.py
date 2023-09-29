@@ -2,7 +2,7 @@ import logging
 
 import click
 
-from dartsass.hello import HelloBase, HelloHTML
+from flechette_insolente.hello import HelloBase, HelloHTML
 
 
 @click.command()

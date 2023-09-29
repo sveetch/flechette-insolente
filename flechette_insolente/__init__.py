@@ -1,4 +1,4 @@
-"""An attempt to implement usage of dart-sass with Embedded Sass Protocol"""
+"""A Python wrapper for dart-sass"""
 from importlib.metadata import version
 
 

@@ -1,7 +1,7 @@
 import pytest
 
-from dartsass.exceptions import CommandArgumentsError
-from dartsass.compiler.arguments import ArgumentsModel
+from flechette_insolente.exceptions import CommandArgumentsError
+from flechette_insolente.compiler.arguments import ArgumentsModel
 
 
 def test_arguments_error_source_invalid():
@@ -14,6 +14,7 @@ def test_arguments_error_source_invalid():
         )
     assert exc_info.value.args[0] == "Given source path does not exist: foo.css"
 
+
 def test_arguments_error_unknow_argument(source_structure):
     """
     Invalid argument
@@ -24,6 +25,7 @@ def test_arguments_error_unknow_argument(source_structure):
             michou=True
         )
     assert exc_info.value.args[0] == "Unknowed argument: michou"
+
 
 def test_arguments_error_invalid_loadpath(source_structure):
     """

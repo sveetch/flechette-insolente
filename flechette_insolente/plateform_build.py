@@ -20,9 +20,7 @@ import platform
 
 from pathlib import Path
 
-import dartsass
-
-from .exceptions import RunnedCommandError
+import flechette_insolente
 
 
 def get_plateform():
@@ -74,7 +72,9 @@ def get_sass_executable():
         Path: Path to executable file.
     """
     plateform_code = "-".join(get_plateform())
-    return Path(dartsass.__file__).parent / "vendor" / plateform_code / "sass"
+    return (
+        Path(flechette_insolente.__file__).parent / "vendor" / plateform_code / "sass"
+    )
 
 
 DART_SASS_EXEC = get_sass_executable()

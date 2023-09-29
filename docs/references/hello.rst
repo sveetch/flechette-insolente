@@ -3,6 +3,6 @@
 Hello world
 ===========
 
-.. automodule:: dartsass.hello
+.. automodule:: flechette_insolente.hello
     :members:
     :show-inheritance:

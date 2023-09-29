@@ -3,7 +3,7 @@ import logging
 import click
 
 from ..compiler import DartSassCompiler
-from ..exceptions import RunnedCommandError
+# from ..exceptions import RunnedCommandError
 
 
 @click.command()
@@ -15,5 +15,6 @@ def compile_command(context):
     logger = logging.getLogger("flechette-insolente")
 
     compiler = DartSassCompiler()
+    compiler.version()
 
     logger.info("Foo.")

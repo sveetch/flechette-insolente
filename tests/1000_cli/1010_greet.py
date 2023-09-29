@@ -4,7 +4,7 @@ import pytest
 
 from click.testing import CliRunner
 
-from dartsass.cli.entrypoint import cli_frontend
+from flechette_insolente.cli.entrypoint import cli_frontend
 
 
 APPLABEL = "flechette-insolente"

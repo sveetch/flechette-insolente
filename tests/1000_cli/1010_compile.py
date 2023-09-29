@@ -1,11 +1,8 @@
-import logging
-
 import pytest
 
 from click.testing import CliRunner
 
-from dartsass import __pkgname__
-from dartsass.cli.entrypoint import cli_frontend
+from flechette_insolente.cli.entrypoint import cli_frontend
 
 
 @pytest.mark.skip

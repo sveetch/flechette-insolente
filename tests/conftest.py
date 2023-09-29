@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-import dartsass
+import flechette_insolente
 
 
 class FixturesSettingsTestMixin(object):
@@ -24,7 +24,7 @@ class FixturesSettingsTestMixin(object):
     """
     def __init__(self):
         self.application_path = Path(
-            dartsass.__file__
+            flechette_insolente.__file__
         ).parents[0].resolve()
 
         self.package_path = self.application_path.parent
@@ -51,7 +51,7 @@ class FixturesSettingsTestMixin(object):
             APPLICATION=str(self.application_path),
             TESTS=str(self.tests_path),
             FIXTURES=str(self.datas_path),
-            VERSION=dartsass.__version__,
+            VERSION=flechette_insolente.__version__,
         )
 
 

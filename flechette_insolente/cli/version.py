@@ -1,6 +1,6 @@
 import click
 
-from dartsass import __version__
+from flechette_insolente import __version__
 
 
 @click.command()

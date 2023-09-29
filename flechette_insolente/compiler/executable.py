@@ -1,7 +1,7 @@
 import subprocess
 from pathlib import Path
 
-import dartsass
+import flechette_insolente
 
 from ..exceptions import RunnedCommandError
 from ..plateform_build import DART_SASS_EXEC
@@ -12,25 +12,37 @@ class DebugExecVariance:
     Temporary debug stuff used in exec_dev command
     """
     def exit_1(self):
-        basepath = Path(dartsass.__file__).parent.parent / "tests/fixture_datas/scripts"
+        basepath = (
+            Path(flechette_insolente.__file__).parent.parent /
+            "tests/fixture_datas/scripts"
+        )
         result = self._exec(cmd_name=str(basepath / "./exit_1_sample.sh"))
 
         return result
 
     def exit_2(self):
-        basepath = Path(dartsass.__file__).parent.parent / "tests/fixture_datas/scripts"
+        basepath = (
+            Path(flechette_insolente.__file__).parent.parent /
+            "tests/fixture_datas/scripts"
+        )
         result = self._exec(cmd_name=str(basepath / "./exit_2_sample.sh"))
 
         return result
 
     def colored_error(self):
-        basepath = Path(dartsass.__file__).parent.parent / "tests/fixture_datas/scripts"
+        basepath = (
+            Path(flechette_insolente.__file__).parent.parent /
+            "tests/fixture_datas/scripts"
+        )
         result = self._exec(cmd_name=str(basepath / "./error_colored_sample.py"))
 
         return result
 
     def sleepy_error(self):
-        basepath = Path(dartsass.__file__).parent.parent / "tests/fixture_datas/scripts"
+        basepath = (
+            Path(flechette_insolente.__file__).parent.parent /
+            "tests/fixture_datas/scripts"
+        )
         result = self._exec(cmd_name=str(basepath / "./error_sleepy_script.py"))
 
         return result

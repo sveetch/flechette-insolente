@@ -12,7 +12,7 @@
 #
 
 # Get the module version
-from dartsass import __version__ as dartsass_version
+from flechette_insolente import __version__ as flechette_insolente_version
 
 
 # -- Project information -----------------------------------------------------
@@ -22,9 +22,9 @@ copyright = "2023, David Thenon"
 author = "David Thenon"
 
 # The short X.Y version
-version = dartsass_version
+version = flechette_insolente_version
 # The full version, including alpha/beta/rc tags
-release = dartsass_version
+release = flechette_insolente_version
 
 
 # -- General configuration ---------------------------------------------------

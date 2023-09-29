@@ -3,6 +3,6 @@
 Exceptions
 ==========
 
-.. automodule:: dartsass.exceptions
+.. automodule:: flechette_insolente.exceptions
     :members:
     :show-inheritance:

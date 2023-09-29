@@ -1,6 +1,6 @@
 import pytest
 
-from dartsass.hello import HelloHTML
+from flechette_insolente.hello import HelloHTML
 
 
 def test_default_name():

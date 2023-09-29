@@ -11,7 +11,7 @@ TWINE_BIN=$(VENV_PATH)/bin/twine
 
 PACKAGE_NAME=flechette-insolente
 PACKAGE_SLUG=flechette_insolente
-APPLICATION_NAME=dartsass
+APPLICATION_NAME=flechette_insolente
 
 # Formatting variables, FORMATRESET is always to be used last to close formatting
 FORMATBLUE:=$(shell tput setab 4)

@@ -1,7 +1,7 @@
 import pytest
 
-from dartsass.hello import HelloBase
-from dartsass.exceptions import AppOperationError
+from flechette_insolente.hello import HelloBase
+from flechette_insolente.exceptions import AppOperationError
 
 
 def test_default_name():

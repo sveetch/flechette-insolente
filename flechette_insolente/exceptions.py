@@ -1,7 +1,6 @@
 """
 Specific application exceptions.
 """
-from pathlib import Path
 
 
 class FlechetteInsolenteBaseException(Exception):

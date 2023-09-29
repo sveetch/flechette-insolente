@@ -3,6 +3,6 @@
 Logging
 =======
 
-.. automodule:: dartsass.logger
+.. automodule:: flechette_insolente.logger
     :members:
     :show-inheritance:

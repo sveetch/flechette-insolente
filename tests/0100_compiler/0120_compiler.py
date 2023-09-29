@@ -1,15 +1,14 @@
 import json
-from pathlib import Path
 
 import pytest
 
-from dartsass.exceptions import CommandArgumentsError, RunnedCommandError
-from dartsass.compiler import DartSassCompiler
-from dartsass.utils.jsons import ExtendedJsonEncoder
-from dartsass.plateform_build import DART_SASS_EXEC
+from flechette_insolente.exceptions import RunnedCommandError
+from flechette_insolente.compiler import DartSassCompiler
+from flechette_insolente.utils.jsons import ExtendedJsonEncoder
+from flechette_insolente.plateform_build import DART_SASS_EXEC
 
 
-def temp_debug():
+def temp_debug(compiler, css_bucket, scss_bucket):
     try:
         # Compile sample that may fail
         output = compiler.compile(
@@ -85,7 +84,7 @@ def test_compiler_error_missing_import(source_structure, settings):
     css_bucket.mkdir()
 
     with pytest.raises(RunnedCommandError) as exc_info:
-        output = compiler.compile(
+        compiler.compile(
             scss_bucket / "basic.scss",
         )
 
@@ -118,7 +117,7 @@ def test_compiler_basic(source_structure):
     css_bucket = source_structure / "css"
     css_bucket.mkdir()
 
-    output = compiler.compile(
+    compiler.compile(
         scss_bucket,
         destination=css_bucket,
         source_map=True,
