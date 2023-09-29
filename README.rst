@@ -9,7 +9,7 @@ Flèchette insolente
 ===================
 
 Named after french version of `Dart Sass`_, this is a laboratory for research and
-development on using Dart sass with its `Embedded Sass Protocol`_.
+development on wrapping Dart sass.
 
 
 Dependencies
