@@ -4,6 +4,65 @@ from flechette_insolente.exceptions import CommandArgumentsError
 from flechette_insolente.compiler.arguments import ArgumentsModel
 
 
+def test_arguments_get_available_parameters_multiple_occurences():
+    """
+    Method should raise an error for multiple identical parameters.
+    """
+    # Define a custom model with a minimal spec
+    class CustomArgumentsModel(ArgumentsModel):
+        COMMAND_ARGUMENTS = {
+            "source": {},
+        }
+        COMMAND_OPTIONS = {
+            "source": {
+                "args": ("--source",),
+            },
+        }
+
+    with pytest.raises(CommandArgumentsError) as exc_info:
+        CustomArgumentsModel.get_available_parameters()
+
+    assert exc_info.value.args[0] == "Found multiple definition for parameter 'source'"
+
+
+def test_arguments_get_available_parameters():
+    """
+    Use custom attributes to check everything is working without to assert on
+    the huge parameter spec.
+    """
+    # Define a custom model with a minimal spec
+    class CustomArgumentsModel(ArgumentsModel):
+        COMMAND_ARGUMENTS = {
+            "source": {},
+        }
+        COMMAND_OPTIONS = {
+            "style": {
+                "args": ("--style",),
+            },
+            "indented": {
+                "args": ("--indented/--no-indented",),
+            },
+        }
+
+    parameters = CustomArgumentsModel.get_available_parameters()
+
+    assert parameters == {
+        "source": None,
+        "style": "--style",
+        "indented": ["--indented", "--no-indented"]
+    }
+
+
+def test_arguments_get_available_parameters_formerly_spec():
+    """
+    Just get available parameters as described from ArgumentsModel attributes to ensure
+    they do not have any error
+    """
+    parameters = ArgumentsModel.get_available_parameters()
+
+    assert len(parameters) > 1
+
+
 def test_arguments_error_source_invalid():
     """
     Source does not exist

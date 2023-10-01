@@ -10,7 +10,7 @@ from ..compiler import DartSassCompiler
 @click.pass_context
 def compile_command(context):
     """
-    R&D on managing subprocess success and failure from command execution
+    Compile Sass sources to CSS with dart-sass compiler.
     """
     logger = logging.getLogger("flechette-insolente")
 

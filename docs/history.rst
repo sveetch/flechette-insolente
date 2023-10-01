@@ -7,8 +7,12 @@ History
 Version 0.3.0 - Unreleased
 **************************
 
-A new attempt which will simply used the classic subprocess way to use included
-dart-sass executable.
+Totally changed spirit of this package, we dropped the idea of using *Embedded Host*
+since it is very hard to get into working with it (Protobug, expected RPC
+communication, etc..).
+
+Instead we move this package as a Python wrapper that will use subprocess to execute
+dart-sass binary.
 
 
 Version 0.2.0 - Unreleased

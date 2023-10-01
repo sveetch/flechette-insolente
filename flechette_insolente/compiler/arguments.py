@@ -3,22 +3,119 @@ from pathlib import Path
 from flechette_insolente.exceptions import CommandArgumentsError
 
 
+def lazy_path_type(*args, **kwargs):
+    """
+    This way so importing click is only done during resolution in command
+    """
+    # return click.Path
+    return
+
+
+def lazy_choice_type(*args, **kwargs):
+    """
+    This way so importing click is only done during resolution in command
+    """
+    # return click.Choice
+    return
+
+
 class ArgumentsModel:
     """
-    Object to receive and validate arguments to produce normalized argument for
-    dart-sass executable.
+    Implementation model for dart-sass arguments.
+
+    This describe all arguments and options supported by dart-sass executable, validate
+    value and possibly build the arguments and options chain to give to executable or
+    build click arguments and options.
 
     TODO: Use more specific exceptions.
+
+    Attributes:
+        OPTION_STYLE_CHOICES (tuple): Available choices for ``style`` option.
+        COMMAND_ARGUMENTS (dict): Description of available click arguments. This is
+            the reference for supported ``dart-sass`` executable positional parameters
+            which participate to build the command line arguments implemented with
+            Click and the positional arguments for ``ArgumentsModel`` class.
+        COMMAND_OPTIONS (dict): Description of available click arguments. This is
+            the reference for supported ``dart-sass`` executable non positional
+            parameters which participate to build the command line options
+            implemented with Click and the non positional arguments for
+            ``ArgumentsModel`` class.
     """
-    AVAILABLE_ARGUMENTS = {
-        "source": None,
-        "destination": None,
-        "style": "--style",
-        "load_paths": "--load-path",
-        "indented": ("--indented", "--no-indented"),
-        "source_map": ("--source-map", "--no-source-map"),
+    # Available choices for 'style' option
+    OPTION_STYLE_CHOICES = ("expanded", "compressed")
+
+    # Available click arguments
+    COMMAND_ARGUMENTS = {
+        "source": {
+            "kwargs": {
+                "type": lazy_path_type(
+                    file_okay=True, dir_okay=True, writable=True, resolve_path=False,
+                    path_type=Path, exists=True,
+                ),
+                "required": True,
+            }
+        },
+        "destination": {
+            "kwargs": {
+                "type": lazy_path_type(
+                    file_okay=True, dir_okay=True, writable=True, resolve_path=False,
+                    path_type=Path,
+                ),
+                "required": False,
+            }
+        },
     }
-    AVAILABLE_STYLE = ("expanded", "compressed")
+
+    # Available click options
+    COMMAND_OPTIONS = {
+        "style": {
+            "args": ("--style",),
+            "kwargs": {
+                "metavar": "STRING",
+                "type": lazy_choice_type(OPTION_STYLE_CHOICES),
+                "help": (
+                    "Output style."
+                ),
+                "show_default": True,
+                "default": OPTION_STYLE_CHOICES[0],
+            }
+        },
+        "load_paths": {
+            "args": ("--load-path",),
+            "kwargs": {
+                "metavar": "PATH",
+                "type": lazy_path_type(
+                    file_okay=False, dir_okay=True, writable=True, resolve_path=False,
+                    path_type=Path, exists=True,
+                ),
+                "multiple": True,
+                "help": (
+                    "A path to use when resolving imports. May be passed multiple "
+                    "times."
+                ),
+            }
+        },
+        # Not sure about this option since it only mention stdin, is that only common
+        # shell standard input ? If so, remove it since we won't support it (yet?).
+        "indented": {
+            "args": ("--indented/--no-indented",),
+            "kwargs": {
+                "default": None,
+                "help": (
+                    "Use the indented syntax for input from stdin."
+                ),
+            }
+        },
+        "source_map": {
+            "args": ("--source-map/--no-source-map",),
+            "kwargs": {
+                "default": True,
+                "help": (
+                    "Whether to generate source maps."
+                ),
+            }
+        },
+    }
 
     def __init__(self, source, **kwargs):
         self.destination = None
@@ -37,7 +134,7 @@ class ArgumentsModel:
         self.cmd_args = [":".join(sources)]
 
         for name, value in kwargs.items():
-            if name not in self.AVAILABLE_ARGUMENTS:
+            if name not in self.get_available_parameters():
                 raise CommandArgumentsError("Unknowed argument: {}".format(name))
             else:
                 content = getattr(self, "_validate_{}".format(name))(value)
@@ -90,14 +187,14 @@ class ArgumentsModel:
         TODO: Validate style from available choice (to be synchronized with dart-sass
         spec)
         """
-        if value not in self.AVAILABLE_STYLE:
+        if value not in self.OPTION_STYLE_CHOICES:
             msg = "Invalid given output style '{value}', it should be one of: {names}"
             raise CommandArgumentsError(msg.format(
                 value=value,
-                names=", ".join(self.AVAILABLE_STYLE),
+                names=", ".join(self.OPTION_STYLE_CHOICES),
             ))
 
-        return [self.AVAILABLE_ARGUMENTS["style"], value]
+        return [self.get_available_parameters()["style"], value]
 
     def _validate_indented(self, value):
         """
@@ -113,8 +210,8 @@ class ArgumentsModel:
         """
         return self.validate_boolean_flag(
             value,
-            self.AVAILABLE_ARGUMENTS["indented"][0],
-            self.AVAILABLE_ARGUMENTS["indented"][1],
+            self.get_available_parameters()["indented"][0],
+            self.get_available_parameters()["indented"][1],
         )
 
     def _validate_source_map(self, value):
@@ -131,8 +228,8 @@ class ArgumentsModel:
         """
         return self.validate_boolean_flag(
             value,
-            self.AVAILABLE_ARGUMENTS["source_map"][0],
-            self.AVAILABLE_ARGUMENTS["source_map"][1],
+            self.get_available_parameters()["source_map"][0],
+            self.get_available_parameters()["source_map"][1],
         )
 
     def _validate_load_paths(self, value):
@@ -152,6 +249,25 @@ class ArgumentsModel:
 
         paths = []
         for item in value:
-            paths.extend([self.AVAILABLE_ARGUMENTS["load_paths"], str(item)])
+            paths.extend([self.get_available_parameters()["load_paths"], str(item)])
 
         return paths
+
+    @classmethod
+    def get_available_parameters(cls):
+        """
+        Get all available arguments for 'ArgumentsModel'.
+        """
+        parameters = {k: None for k, v in cls.COMMAND_ARGUMENTS.items()}
+
+        for k, v in cls.COMMAND_OPTIONS.items():
+            if k in parameters:
+                msg = "Found multiple definition for parameter '{}'"
+                raise CommandArgumentsError(msg.format(k))
+
+            parameters[k] = v["args"][0].split("/")
+            if len(parameters[k]) == 1:
+                parameters[k] = parameters[k][0]
+
+
+        return parameters
