@@ -4,7 +4,7 @@ from .arguments import ArgumentsModel
 
 class DartSassCompiler(ExecutableAbstract):
     """
-    This should be the wrapper around dart-sass executable compiler.
+    This is the wrapper interface for dart-sass executable compiler.
     """
 
     def version(self):

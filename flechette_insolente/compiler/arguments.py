@@ -1,25 +1,36 @@
+import copy
 from pathlib import Path
 
-from flechette_insolente.exceptions import CommandArgumentsError
+from ..exceptions import CommandArgumentsError
+
+from .validators import ArgumentsValidationAbstract
 
 
-def lazy_path_type(*args, **kwargs):
+def lazy_type(*args, **kwargs):
     """
-    This way so importing click is only done during resolution in command
+    Returns a callable to resolve object with args and kwargs if coerce_type is
+    given.
+
+    Arguments:
+        *args: Positionnal argument to give to object type when coercing.
+        *kwargs: Non positionnal arguments to give to object type when coercing.
+
+    Returns:
+        function: A callable function which expect optional ``coerce_type`` non
+            positional argument which is a class object to use to coerce to. If not
+            given, args and kwargs are just returned into a tuple.
     """
-    # return click.Path
-    return
+    def _curried(coerce_type=None):
+        print("* lazy_type: args, kwargs:", args, kwargs)
+        if not coerce_type:
+            return args, kwargs
+
+        return coerce_type(*args, **kwargs)
+
+    return _curried
 
 
-def lazy_choice_type(*args, **kwargs):
-    """
-    This way so importing click is only done during resolution in command
-    """
-    # return click.Choice
-    return
-
-
-class ArgumentsModel:
+class ArgumentsModel(ArgumentsValidationAbstract):
     """
     Implementation model for dart-sass arguments.
 
@@ -27,19 +38,22 @@ class ArgumentsModel:
     value and possibly build the arguments and options chain to give to executable or
     build click arguments and options.
 
-    TODO: Use more specific exceptions.
+    This is the reference for supported ``dart-sass`` executable positional parameters
+    which participate to build the command line arguments implemented with Click and
+    the positional arguments for ``ArgumentsModel`` class.
+
+    ``COMMAND_ARGUMENTS`` and ``COMMAND_OPTIONS`` are modelized after the Click
+    parameters API.
+
+    TODO:
+
+    - May use more specific exceptions;
 
     Attributes:
         OPTION_STYLE_CHOICES (tuple): Available choices for ``style`` option.
-        COMMAND_ARGUMENTS (dict): Description of available click arguments. This is
-            the reference for supported ``dart-sass`` executable positional parameters
-            which participate to build the command line arguments implemented with
-            Click and the positional arguments for ``ArgumentsModel`` class.
-        COMMAND_OPTIONS (dict): Description of available click arguments. This is
-            the reference for supported ``dart-sass`` executable non positional
-            parameters which participate to build the command line options
-            implemented with Click and the non positional arguments for
-            ``ArgumentsModel`` class.
+        COMMAND_ARGUMENTS (dict): Description of available click arguments.
+        COMMAND_OPTIONS (dict): Description of available click arguments.
+        cmd_args (list): List of all parameters to give to dart-sass executable.
     """
     # Available choices for 'style' option
     OPTION_STYLE_CHOICES = ("expanded", "compressed")
@@ -47,8 +61,9 @@ class ArgumentsModel:
     # Available click arguments
     COMMAND_ARGUMENTS = {
         "source": {
+            "coerce_type": "path",
             "kwargs": {
-                "type": lazy_path_type(
+                "type": lazy_type(
                     file_okay=True, dir_okay=True, writable=True, resolve_path=False,
                     path_type=Path, exists=True,
                 ),
@@ -56,8 +71,9 @@ class ArgumentsModel:
             }
         },
         "destination": {
+            "coerce_type": "path",
             "kwargs": {
-                "type": lazy_path_type(
+                "type": lazy_type(
                     file_okay=True, dir_okay=True, writable=True, resolve_path=False,
                     path_type=Path,
                 ),
@@ -69,10 +85,11 @@ class ArgumentsModel:
     # Available click options
     COMMAND_OPTIONS = {
         "style": {
+            "coerce_type": "choice",
             "args": ("--style",),
             "kwargs": {
                 "metavar": "STRING",
-                "type": lazy_choice_type(OPTION_STYLE_CHOICES),
+                "type": lazy_type(OPTION_STYLE_CHOICES),
                 "help": (
                     "Output style."
                 ),
@@ -81,10 +98,11 @@ class ArgumentsModel:
             }
         },
         "load_paths": {
+            "coerce_type": "path",
             "args": ("--load-path",),
             "kwargs": {
                 "metavar": "PATH",
-                "type": lazy_path_type(
+                "type": lazy_type(
                     file_okay=False, dir_okay=True, writable=True, resolve_path=False,
                     path_type=Path, exists=True,
                 ),
@@ -133,6 +151,7 @@ class ArgumentsModel:
         # Start argument with gathered ressource paths
         self.cmd_args = [":".join(sources)]
 
+        # Get each parameter, validate it and store into command arguments
         for name, value in kwargs.items():
             if name not in self.get_available_parameters():
                 raise CommandArgumentsError("Unknowed argument: {}".format(name))
@@ -143,115 +162,6 @@ class ArgumentsModel:
 
     def __str__(self):
         return " ".join(self.cmd_args)
-
-    def validate_boolean_flag(self, value, arg_true, arg_false):
-        """
-        Create arguments for given boolean flag
-
-        Arguments:
-            value (boolean): If True enable the 'indented' argument, if False enable
-                the 'no-indented' argument. Else nothing is done.
-
-        Returns:
-            list: List with argument according to the flag if value is boolean, else an
-            empty list.
-        """
-        if value is True:
-            return [arg_true]
-        elif value is False:
-            return [arg_false]
-
-        return []
-
-    def _validate_source(self, value):
-        path = Path(value)
-
-        if not path.exists():
-            msg = "Given source path does not exist: {}"
-            raise CommandArgumentsError(msg.format(path))
-
-        return path
-
-    def _validate_destination(self, value):
-        """
-        Note:
-        We can"t validate anything since Python os/pathlib need an existing ressource
-        to check if it is a dir or not. But destination may not exists if it is a file.
-        """
-        return Path(value)
-
-    def _validate_style(self, value):
-        """
-        Create arguments for given output style name.
-
-        TODO: Validate style from available choice (to be synchronized with dart-sass
-        spec)
-        """
-        if value not in self.OPTION_STYLE_CHOICES:
-            msg = "Invalid given output style '{value}', it should be one of: {names}"
-            raise CommandArgumentsError(msg.format(
-                value=value,
-                names=", ".join(self.OPTION_STYLE_CHOICES),
-            ))
-
-        return [self.get_available_parameters()["style"], value]
-
-    def _validate_indented(self, value):
-        """
-        Create arguments for given indented flag
-
-        Arguments:
-            value (boolean): If True enable the 'indented' argument, if False enable
-                the 'no-indented' argument. Else nothing is done.
-
-        Returns:
-            list: List with argument according to the flag if value is boolean, else an
-            empty list.
-        """
-        return self.validate_boolean_flag(
-            value,
-            self.get_available_parameters()["indented"][0],
-            self.get_available_parameters()["indented"][1],
-        )
-
-    def _validate_source_map(self, value):
-        """
-        Create arguments for given source-map flag
-
-        Arguments:
-            value (boolean): If True enable the 'source-map' argument, if False enable
-                the 'no-source-map' argument. Else nothing is done.
-
-        Returns:
-            list: List with argument according to the flag if value is boolean, else an
-            empty list.
-        """
-        return self.validate_boolean_flag(
-            value,
-            self.get_available_parameters()["source_map"][0],
-            self.get_available_parameters()["source_map"][1],
-        )
-
-    def _validate_load_paths(self, value):
-        """
-        Create arguments for each given path.
-        """
-        errors = [
-            item
-            for item in value
-            if not Path(item).exists()
-        ]
-        if len(errors):
-            msg = "Some given 'load-path' does not exist: \n{}"
-            raise CommandArgumentsError(msg.format(
-                "\n".join(errors)
-            ))
-
-        paths = []
-        for item in value:
-            paths.extend([self.get_available_parameters()["load_paths"], str(item)])
-
-        return paths
 
     @classmethod
     def get_available_parameters(cls):
@@ -269,5 +179,64 @@ class ArgumentsModel:
             if len(parameters[k]) == 1:
                 parameters[k] = parameters[k][0]
 
-
         return parameters
+
+    @classmethod
+    def coerce_parameter_type(cls, types, name, values):
+        """
+        TODO:
+        Coerce parameter type in place if type is defined.
+        """
+        coerce_type = None
+
+        if "coerce_type" in values:
+            print("- values['coerce_type']", values["coerce_type"])
+            if values["coerce_type"] not in types:
+                msg = (
+                    "Argument '{name}' define a coerce type '{ctype}' that is not "
+                    "available from resolver."
+                )
+                raise CommandArgumentsError(msg.format(
+                    name=name,
+                    ctype=values["coerce_type"],
+                ))
+
+            # Pop coerce_type that is not an allowed kwargs
+            coerce_type = types.get(values["coerce_type"])
+            del values["coerce_type"]
+            print("- coerce_type", coerce_type)
+
+            if "type" not in values.get("kwargs", []):
+                msg = (
+                    "Argument '{name}' define a coerce type '{ctype}' but has no "
+                    "'type' kwarg."
+                )
+                raise CommandArgumentsError(msg.format(
+                    name=name,
+                    ctype=coerce_type,
+                ))
+
+        if "type" in values.get("kwargs", []):
+            print("- values['kwargs']['type']", values["kwargs"]["type"])
+            values["kwargs"]["type"] = values["kwargs"]["type"](
+                coerce_type=coerce_type
+            )
+
+        return
+
+    @classmethod
+    def get_cli_arguments(cls, types):
+        """
+        TODO:
+        Returns the arguments descriptions with lazy type callables coerced to the
+        right type.
+        """
+        arguments = copy.deepcopy(cls.COMMAND_ARGUMENTS)
+
+        for name, values in arguments.items():
+            print()
+            print("📄 arg:", name, values)
+
+            cls.coerce_parameter_type(types, name, values)
+
+        return arguments

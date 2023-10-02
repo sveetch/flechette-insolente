@@ -16,7 +16,7 @@ def version_command(context, check):
     """
     Print out version information.
     """
-    click.echo("flechette-insolente {}".format(__version__))
+    click.echo("flechette-insolente, version {}".format(__version__))
 
     if check:
         from ..compiler import DartSassCompiler
