@@ -1,7 +1,7 @@
 from flechette_insolente.compiler.arguments import ArgumentsModel
 
 
-def test_arguments_success_simple_source(source_structure):
+def test_success_simple_source(source_structure):
     """
     Only giving source path
     """
@@ -9,7 +9,7 @@ def test_arguments_success_simple_source(source_structure):
     assert model.cmd_args == ["{}/scss/minimal.scss".format(source_structure)]
 
 
-def test_arguments_success_with_destination(source_structure):
+def test_success_with_destination(source_structure):
     """
     Giving source as file and destination as directory (model can not validate this
     but compiler will raise issue because of incompatible ressource type)
@@ -23,7 +23,7 @@ def test_arguments_success_with_destination(source_structure):
     ]
 
 
-def test_arguments_success_loadpath(source_structure):
+def test_success_loadpath(source_structure):
     """
     With some load-path
     """
@@ -43,7 +43,7 @@ def test_arguments_success_loadpath(source_structure):
     ]
 
 
-def test_arguments_style(source_structure):
+def test_style(source_structure):
     """
     With style argument
     """
@@ -58,7 +58,7 @@ def test_arguments_style(source_structure):
     ]
 
 
-def test_arguments_indented(source_structure):
+def test_indented(source_structure):
     """
     With indented flag argument
     """
@@ -87,7 +87,7 @@ def test_arguments_indented(source_structure):
     assert model.cmd_args == ["{}/scss/minimal.scss".format(source_structure)]
 
 
-def test_arguments_source_map(source_structure):
+def test_source_map(source_structure):
     """
     With source_map flag argument
     """
@@ -116,7 +116,7 @@ def test_arguments_source_map(source_structure):
     assert model.cmd_args == ["{}/scss/minimal.scss".format(source_structure)]
 
 
-def test_arguments_success_mixed(source_structure):
+def test_success_mixed(source_structure):
     """
     With many various arguments
     """

@@ -21,7 +21,6 @@ def lazy_type(*args, **kwargs):
             given, args and kwargs are just returned into a tuple.
     """
     def _curried(coerce_type=None):
-        print("* lazy_type: args, kwargs:", args, kwargs)
         if not coerce_type:
             return args, kwargs
 
@@ -43,11 +42,26 @@ class ArgumentsModel(ArgumentsValidationAbstract):
     the positional arguments for ``ArgumentsModel`` class.
 
     ``COMMAND_ARGUMENTS`` and ``COMMAND_OPTIONS`` are modelized after the Click
-    parameters API.
+    parameters API with additional "coerce_type" item to define coerce type to perform,
+    this item is removed from output for CLI.
+
+    .. NOTE::
+        The role of model is to gather every supported parameter in unique place that
+        can be used to build CLI parameters or executable parameters.
+
+        Remember we implement this package CLI and the support of dart-sass executable
+        and they must match. Also we don't want to hardcode usage of Click types here
+        since it may be optional.
 
     TODO:
 
     - May use more specific exceptions;
+    - Available Coerce type should be defined from module using it:
+
+        - So a one in compiler for the executable parameters (like "path" would use
+          Path object, "choice" would use ... ?);
+        - Another one in cli for the CLI args and options (click.Choice, click.Path);
+        - Only implement coerce type we need, don't try to cover more for now;
 
     Attributes:
         OPTION_STYLE_CHOICES (tuple): Available choices for ``style`` option.
@@ -184,17 +198,28 @@ class ArgumentsModel(ArgumentsValidationAbstract):
     @classmethod
     def coerce_parameter_type(cls, types, name, values):
         """
-        TODO:
-        Coerce parameter type in place if type is defined.
+        Coerce parameter if type is defined and match available type resolvers.
+
+        Arguments:
+            cls (object): Class object.
+            types (dict): A dictionnary of available coerce object indexed on their name
+                related to ``coerce_type``.
+            name (string): Parameter name.
+            values (dict): Original dictionnary of values.
+
+        Returns:
+            dict: Given values where "coerce_type" has been removed and with possible
+            type coerced.
         """
         coerce_type = None
+        # Ensure we don't edit in place given values
+        values = copy.deepcopy(values)
 
         if "coerce_type" in values:
-            print("- values['coerce_type']", values["coerce_type"])
             if values["coerce_type"] not in types:
                 msg = (
                     "Argument '{name}' define a coerce type '{ctype}' that is not "
-                    "available from resolver."
+                    "available from resolver"
                 )
                 raise CommandArgumentsError(msg.format(
                     name=name,
@@ -202,41 +227,59 @@ class ArgumentsModel(ArgumentsValidationAbstract):
                 ))
 
             # Pop coerce_type that is not an allowed kwargs
+            coerce_type_name = values["coerce_type"]
             coerce_type = types.get(values["coerce_type"])
             del values["coerce_type"]
-            print("- coerce_type", coerce_type)
 
             if "type" not in values.get("kwargs", []):
                 msg = (
                     "Argument '{name}' define a coerce type '{ctype}' but has no "
-                    "'type' kwarg."
+                    "'type' kwarg"
                 )
                 raise CommandArgumentsError(msg.format(
                     name=name,
-                    ctype=coerce_type,
+                    ctype=coerce_type_name,
                 ))
 
         if "type" in values.get("kwargs", []):
-            print("- values['kwargs']['type']", values["kwargs"]["type"])
             values["kwargs"]["type"] = values["kwargs"]["type"](
                 coerce_type=coerce_type
             )
 
-        return
+        return values
 
     @classmethod
     def get_cli_arguments(cls, types):
         """
-        TODO:
-        Returns the arguments descriptions with lazy type callables coerced to the
-        right type.
+        Returns commandline argument descriptions.
+
+        Arguments:
+            cls (object): Class object.
+            types (dict): A dictionnary of available coerce object indexed on their name
+                related to ``coerce_type``.
+
+        Returns:
+            dict: Argument descriptions.
         """
-        arguments = copy.deepcopy(cls.COMMAND_ARGUMENTS)
+        return {
+            name: cls.coerce_parameter_type(types, name, values)
+            for name, values in cls.COMMAND_ARGUMENTS.items()
+        }
 
-        for name, values in arguments.items():
-            print()
-            print("📄 arg:", name, values)
+    @classmethod
+    def get_cli_options(cls, types):
+        """
+        Returns commandline option descriptions.
 
-            cls.coerce_parameter_type(types, name, values)
+        Arguments:
+            cls (object): Class object.
+            types (dict): A dictionnary of available coerce object indexed on their name
+                related to ``coerce_type``.
 
-        return arguments
+        Returns:
+            dict: Argument descriptions.
+        """
+        return {
+            name: cls.coerce_parameter_type(types, name, values)
+            for name, values in cls.COMMAND_OPTIONS.items()
+        }

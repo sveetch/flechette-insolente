@@ -4,7 +4,7 @@ from flechette_insolente.exceptions import CommandArgumentsError
 from flechette_insolente.compiler.arguments import ArgumentsModel
 
 
-def test_arguments_error_source_invalid():
+def test_error_source_invalid():
     """
     Source does not exist
     """
@@ -15,7 +15,7 @@ def test_arguments_error_source_invalid():
     assert exc_info.value.args[0] == "Given source path does not exist: foo.css"
 
 
-def test_arguments_error_unknow_argument(source_structure):
+def test_error_unknow_argument(source_structure):
     """
     Invalid argument
     """
@@ -27,7 +27,7 @@ def test_arguments_error_unknow_argument(source_structure):
     assert exc_info.value.args[0] == "Unknowed argument: michou"
 
 
-def test_arguments_error_invalid_loadpath(source_structure):
+def test_error_invalid_loadpath(source_structure):
     """
     Invalid load-path
     """
@@ -45,7 +45,7 @@ def test_arguments_error_invalid_loadpath(source_structure):
     )
 
 
-def test_arguments_error_style_invalid(source_structure):
+def test_error_style_invalid(source_structure):
     """
     Invalid output style name
     """
