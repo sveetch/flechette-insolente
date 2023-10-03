@@ -9,6 +9,7 @@ from flechette_insolente.cli.entrypoint import cli_frontend
 
 APPLABEL = "flechette-insolente"
 
+pytestmark = pytest.mark.skip("Deprecated")
 
 def test_greet_basic(caplog):
     """

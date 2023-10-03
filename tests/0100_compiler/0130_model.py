@@ -29,7 +29,7 @@ def test_success_loadpath(source_structure):
     """
     model = ArgumentsModel(
         source_structure / "scss/minimal.scss",
-        load_paths=[
+        load_path=[
             source_structure / "libraries/",
             source_structure / "libraries/addons/",
         ],
@@ -123,7 +123,7 @@ def test_success_mixed(source_structure):
     model = ArgumentsModel(
         source_structure / "scss/minimal.scss",
         destination=source_structure / "css/",
-        load_paths=[
+        load_path=[
             source_structure / "libraries/",
             source_structure / "libraries/addons/",
         ],

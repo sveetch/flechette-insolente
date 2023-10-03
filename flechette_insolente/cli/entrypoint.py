@@ -6,7 +6,6 @@ import click
 from ..logger import init_logger
 
 from .version import version_command
-from .greet import greet_command
 from .compile import compile_command
 from .exec_dev import execdev_command
 
@@ -59,6 +58,5 @@ def cli_frontend(ctx, verbose):
 
 # Attach commands methods to the main grouper
 cli_frontend.add_command(version_command, name="version")
-cli_frontend.add_command(greet_command, name="greet")
 cli_frontend.add_command(compile_command, name="compile")
 cli_frontend.add_command(execdev_command, name="execdev")

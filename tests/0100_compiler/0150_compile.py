@@ -121,7 +121,7 @@ def test_compiler_basic(source_structure):
         scss_bucket,
         destination=css_bucket,
         source_map=True,
-        load_paths=[
+        load_path=[
             source_structure / "libraries",
         ],
     )

@@ -72,7 +72,8 @@ class ArgumentsModel(ArgumentsValidationAbstract):
     # Available choices for 'style' option
     OPTION_STYLE_CHOICES = ("expanded", "compressed")
 
-    # Available click arguments
+    # Available click arguments, note than the item name is used to name the argument
+    # to Click
     COMMAND_ARGUMENTS = {
         "source": {
             "coerce_type": "path",
@@ -96,7 +97,7 @@ class ArgumentsModel(ArgumentsValidationAbstract):
         },
     }
 
-    # Available click options
+    # Available click options, note than Click use the "args" item to name the value
     COMMAND_OPTIONS = {
         "style": {
             "coerce_type": "choice",
@@ -111,7 +112,7 @@ class ArgumentsModel(ArgumentsValidationAbstract):
                 "default": OPTION_STYLE_CHOICES[0],
             }
         },
-        "load_paths": {
+        "load_path": {
             "coerce_type": "path",
             "args": ("--load-path",),
             "kwargs": {

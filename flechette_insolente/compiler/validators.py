@@ -96,7 +96,7 @@ class ArgumentsValidationAbstract:
             self.get_available_parameters()["source_map"][1],
         )
 
-    def _validate_load_paths(self, value):
+    def _validate_load_path(self, value):
         """
         Create arguments for each given path.
         """
@@ -113,6 +113,6 @@ class ArgumentsValidationAbstract:
 
         paths = []
         for item in value:
-            paths.extend([self.get_available_parameters()["load_paths"], str(item)])
+            paths.extend([self.get_available_parameters()["load_path"], str(item)])
 
         return paths

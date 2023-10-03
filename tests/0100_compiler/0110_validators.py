@@ -34,7 +34,7 @@ def test_error_invalid_loadpath(source_structure):
     with pytest.raises(CommandArgumentsError) as exc_info:
         ArgumentsModel(
             source_structure / "scss/minimal.scss",
-            load_paths=[
+            load_path=[
                 source_structure / "libraries/addons/",
                 "../nope",
                 "niet"
