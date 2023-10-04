@@ -2,47 +2,10 @@ import logging
 
 import click
 
-from ..compiler import DartSassCompiler
-# from ..exceptions import RunnedCommandError
+from ..compiler import ArgumentsModel, DartSassCompiler
+from ..exceptions import RunnedCommandError
 
-
-from flechette_insolente.compiler import lazy_type, ArgumentsModel
-
-CLICK_COERCE_TYPES = {
-    "choice": click.Choice,
-    "path": click.Path,
-}
-
-
-def add_arguments(arguments, options):
-    """
-    Given a list of click options this creates a decorator that
-    will return a function used to add the options to a click command.
-
-    :param options: a list of click.options decorator.
-    """
-    def _add_arguments(func):
-        """
-        Given a click command and a list of click options this will
-        return the click command decorated with all the options in the list.
-
-        :param func: a click command function.
-        """
-        for name, values in reversed(options.items()):
-            func = click.option(
-                *values.get("args", []),
-                **values.get("kwargs", {})
-            )(func)
-
-        for name, values in reversed(arguments.items()):
-            func = click.argument(
-                name,
-                **values.get("kwargs", {})
-            )(func)
-
-        return func
-
-    return _add_arguments
+from . import CLICK_COERCE_TYPES, add_arguments
 
 
 @click.command()
@@ -72,5 +35,18 @@ def compile_command(context, **kwargs):
     logger.debug("source_map: {}".format(source_map))
 
     compiler = DartSassCompiler()
-
-    logger.info("Foo.")
+    try:
+        output = compiler.compile(
+            source,
+            destination=destination,
+            style=style,
+            indented=indented,
+            source_map=source_map,
+            load_path=load_path,
+        )
+    except RunnedCommandError as e:
+        print(e.get_payload_details())
+        logger.critical(e)
+        raise click.Abort()
+    else:
+        click.echo(output)

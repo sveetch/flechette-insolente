@@ -9,9 +9,11 @@ from flechette_insolente.cli.entrypoint import cli_frontend
 def test_compile_basic(caplog):
     """
     TODO
-    - Test compiler directly before
-    - CLI "compile" does not implement compiler yet
-    - Need to create structure and point to it for source/destination/etc
+    - [x] Test compiler directly before
+    - [x] Build CLI parameters from model
+    - [x] Describe a small set of parameters
+    - [ ] CLI "compile" does not implement compiler yet
+    - [ ] Need to create structure and point to it for source/destination/etc
 
     """
     runner = CliRunner()
