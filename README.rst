@@ -8,8 +8,9 @@
 Flèchette insolente
 ===================
 
-Named after french version of `Dart Sass`_, this is a laboratory for research and
-development on wrapping Dart sass.
+Named after french version of `Dart Sass`_, this is the Python wrapper for Dart sass.
+Once installed you don't need to have Dart installed on your system to compile Sass
+sources.
 
 
 Dependencies
