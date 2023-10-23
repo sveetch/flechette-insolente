@@ -1,5 +1,6 @@
+from ..arguments import ArgumentsModel
+
 from .executable import ExecutableAbstract
-from .arguments import ArgumentsModel
 
 
 class DartSassCompiler(ExecutableAbstract):
@@ -14,17 +15,14 @@ class DartSassCompiler(ExecutableAbstract):
 
     def compile(self, *args, **kwargs):
         """
-        TODO
+        Execute compiler command with given arguments.
 
         Arguments:
-            source (pathlib.Path):
-
-        Keyword Arguments:
-            destination (pathlib.Path):
-            load_paths (list):
+            *args:
+            *kwargs:
 
         Returns:
-            string:
+            string: Command response from standard output.
         """
         args_model = ArgumentsModel(*args, **kwargs)
 

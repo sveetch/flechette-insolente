@@ -1,4 +1,4 @@
-from flechette_insolente.compiler.arguments import ArgumentsModel
+from flechette_insolente.arguments import ArgumentsModel
 
 
 def test_success_simple_source(source_structure):

@@ -1,32 +1,9 @@
 import copy
-from pathlib import Path
 
 from ..exceptions import CommandArgumentsError
 
+from .definitions import VALUE_CHOICES, COMMAND_ARGUMENTS, COMMAND_OPTIONS
 from .validators import ArgumentsValidationAbstract
-
-
-def lazy_type(*args, **kwargs):
-    """
-    Returns a callable to resolve object with args and kwargs if coerce_type is
-    given.
-
-    Arguments:
-        *args: Positionnal argument to give to object type when coercing.
-        *kwargs: Non positionnal arguments to give to object type when coercing.
-
-    Returns:
-        function: A callable function which expect optional ``coerce_type`` non
-            positional argument which is a class object to use to coerce to. If not
-            given, args and kwargs are just returned into a tuple.
-    """
-    def _curried(coerce_type=None):
-        if not coerce_type:
-            return args, kwargs
-
-        return coerce_type(*args, **kwargs)
-
-    return _curried
 
 
 class ArgumentsModel(ArgumentsValidationAbstract):
@@ -56,99 +33,29 @@ class ArgumentsModel(ArgumentsValidationAbstract):
     TODO:
 
     - May use more specific exceptions;
-    - Available Coerce type should be defined from module using it:
+    - Available Coerce types should be defined from module using it:
 
-        - So a one in compiler for the executable parameters (like "path" would use
+        - One in compiler for the executable parameters (like "path" would use
           Path object, "choice" would use ... ?);
         - Another one in cli for the CLI args and options (click.Choice, click.Path);
         - Only implement coerce type we need, don't try to cover more for now;
 
     Attributes:
-        OPTION_STYLE_CHOICES (tuple): Available choices for ``style`` option.
+        VALUE_CHOICES (tuple): All available choice values for arguments and options
+            that have some.
         COMMAND_ARGUMENTS (dict): Description of available click arguments.
         COMMAND_OPTIONS (dict): Description of available click arguments.
         cmd_args (list): List of all parameters to give to dart-sass executable.
     """
     # Available choices for 'style' option
-    OPTION_STYLE_CHOICES = ("expanded", "compressed")
+    VALUE_CHOICES = VALUE_CHOICES
 
     # Available click arguments, note than the item name is used to name the argument
     # to Click
-    COMMAND_ARGUMENTS = {
-        "source": {
-            "coerce_type": "path",
-            "kwargs": {
-                "type": lazy_type(
-                    file_okay=True, dir_okay=True, writable=True, resolve_path=False,
-                    path_type=Path, exists=True,
-                ),
-                "required": True,
-            }
-        },
-        "destination": {
-            "coerce_type": "path",
-            "kwargs": {
-                "type": lazy_type(
-                    file_okay=True, dir_okay=True, writable=True, resolve_path=False,
-                    path_type=Path,
-                ),
-                "required": False,
-            }
-        },
-    }
+    COMMAND_ARGUMENTS = COMMAND_ARGUMENTS
 
     # Available click options, note than Click use the "args" item to name the value
-    COMMAND_OPTIONS = {
-        "style": {
-            "coerce_type": "choice",
-            "args": ("--style",),
-            "kwargs": {
-                "metavar": "STRING",
-                "type": lazy_type(OPTION_STYLE_CHOICES),
-                "help": (
-                    "Output style."
-                ),
-                "show_default": True,
-                "default": OPTION_STYLE_CHOICES[0],
-            }
-        },
-        "load_path": {
-            "coerce_type": "path",
-            "args": ("--load-path",),
-            "kwargs": {
-                "metavar": "PATH",
-                "type": lazy_type(
-                    file_okay=False, dir_okay=True, writable=True, resolve_path=False,
-                    path_type=Path, exists=True,
-                ),
-                "multiple": True,
-                "help": (
-                    "A path to use when resolving imports. May be passed multiple "
-                    "times."
-                ),
-            }
-        },
-        # Not sure about this option since it only mention stdin, is that only common
-        # shell standard input ? If so, remove it since we won't support it (yet?).
-        "indented": {
-            "args": ("--indented/--no-indented",),
-            "kwargs": {
-                "default": None,
-                "help": (
-                    "Use the indented syntax for input from stdin."
-                ),
-            }
-        },
-        "source_map": {
-            "args": ("--source-map/--no-source-map",),
-            "kwargs": {
-                "default": True,
-                "help": (
-                    "Whether to generate source maps."
-                ),
-            }
-        },
-    }
+    COMMAND_OPTIONS = COMMAND_OPTIONS
 
     def __init__(self, source, **kwargs):
         self.destination = None

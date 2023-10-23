@@ -4,8 +4,9 @@ from pathlib import Path
 import pytest
 
 from flechette_insolente.exceptions import CommandArgumentsError
-from flechette_insolente.compiler.arguments import lazy_type, ArgumentsModel
+from flechette_insolente.arguments import ArgumentsModel
 from flechette_insolente.utils.jsons import DummyStr, ExtendedJsonEncoder
+from flechette_insolente.utils.lazy import lazy_type
 
 
 class DummyChoice(DummyStr):

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flechette_insolente.exceptions import CommandArgumentsError
+from ..exceptions import CommandArgumentsError
 
 
 class ArgumentsValidationAbstract:
@@ -51,11 +51,11 @@ class ArgumentsValidationAbstract:
         TODO: Validate style from available choice (to be synchronized with dart-sass
         spec)
         """
-        if value not in self.OPTION_STYLE_CHOICES:
+        if value not in self.VALUE_CHOICES["style"]:
             msg = "Invalid given output style '{value}', it should be one of: {names}"
             raise CommandArgumentsError(msg.format(
                 value=value,
-                names=", ".join(self.OPTION_STYLE_CHOICES),
+                names=", ".join(self.VALUE_CHOICES["style"]),
             ))
 
         return [self.get_available_parameters()["style"], value]

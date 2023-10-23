@@ -50,9 +50,7 @@ class DebugExecVariance:
 
 class ExecutableAbstract(DebugExecVariance):
     """
-    This should be the wrapper around dart-sass executable compiler.
-
-    Start from libsass signature but it may not be suitable or accurate.
+    The wrapper around dart-sass executable compiler.
     """
     DEFAULT_COMMAND_TIMEOUT = 30
 
@@ -65,7 +63,7 @@ class ExecutableAbstract(DebugExecVariance):
         ``text=True`` argument.
         """
         if isinstance(content, bytes):
-            # Blindly assume user system enable UTF-8
+            # Blindly assume user system use UTF-8
             content = content.decode("UTF-8")
 
         return content

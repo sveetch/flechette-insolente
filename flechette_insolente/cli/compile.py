@@ -2,7 +2,8 @@ import logging
 
 import click
 
-from ..compiler import ArgumentsModel, DartSassCompiler
+from ..arguments import ArgumentsModel
+from ..compiler import DartSassCompiler
 from ..exceptions import RunnedCommandError
 
 from . import CLICK_COERCE_TYPES, add_arguments

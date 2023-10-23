@@ -133,5 +133,3 @@ to do it.
 
 Finally, it seems more efficient to turn down to an old way usage of executable with
 command arguments.
-
-

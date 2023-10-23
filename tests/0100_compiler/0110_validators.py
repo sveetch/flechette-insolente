@@ -1,7 +1,7 @@
 import pytest
 
 from flechette_insolente.exceptions import CommandArgumentsError
-from flechette_insolente.compiler.arguments import ArgumentsModel
+from flechette_insolente.arguments import ArgumentsModel
 
 
 def test_error_source_invalid():
