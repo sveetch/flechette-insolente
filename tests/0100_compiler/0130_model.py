@@ -58,31 +58,31 @@ def test_style(source_structure):
     ]
 
 
-def test_indented(source_structure):
+def test_charset(source_structure):
     """
-    With indented flag argument
+    With charset flag argument
     """
     model = ArgumentsModel(
         source_structure / "scss/minimal.scss",
-        indented=True,
+        charset=True,
     )
     assert model.cmd_args == [
         "{}/scss/minimal.scss".format(source_structure),
-        "--indented",
+        "--charset",
     ]
 
     model = ArgumentsModel(
         source_structure / "scss/minimal.scss",
-        indented=False,
+        charset=False,
     )
     assert model.cmd_args == [
         "{}/scss/minimal.scss".format(source_structure),
-        "--no-indented",
+        "--no-charset",
     ]
 
     model = ArgumentsModel(
         source_structure / "scss/minimal.scss",
-        indented="nope",
+        charset="nope",
     )
     assert model.cmd_args == ["{}/scss/minimal.scss".format(source_structure)]
 

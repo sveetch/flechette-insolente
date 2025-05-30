@@ -5,6 +5,7 @@ from ..utils.lazy import lazy_type
 
 VALUE_CHOICES = {
     "style": ("expanded", "compressed"),
+    "source_map_urls": ("relative", "absolute"),
 }
 """
 Available choices for 'style' option
@@ -39,17 +40,40 @@ to Click
 """
 
 COMMAND_OPTIONS = {
-    "style": {
-        "coerce_type": "choice",
-        "args": ("--style",),
+    "charset": {
+        "args": ("--charset/--no-charset",),
         "kwargs": {
-            "metavar": "STRING",
-            "type": lazy_type(VALUE_CHOICES["style"]),
+            "default": True,
             "help": (
-                "Output style."
+                "Emit a @charset or BOM for CSS with non-ASCII characters."
             ),
-            "show_default": True,
-            "default": VALUE_CHOICES["style"][0],
+        }
+    },
+    "embed_sources": {
+        "args": ("--embed-sources/--no-embed-sources",),
+        "kwargs": {
+            "default": False,
+            "help": (
+                "Embed source file contents in source maps."
+            ),
+        }
+    },
+    "embed_source_map": {
+        "args": ("--embed-source-map/--no-embed-source-map",),
+        "kwargs": {
+            "default": False,
+            "help": (
+                "Embed source map contents in CSS."
+            ),
+        }
+    },
+    "error_css": {
+        "args": ("--error-css/--no-error-css",),
+        "kwargs": {
+            "default": True,
+            "help": (
+                "When an error occurs, emit a stylesheet describing it."
+            ),
         }
     },
     "load_path": {
@@ -68,17 +92,6 @@ COMMAND_OPTIONS = {
             ),
         }
     },
-    # Not sure about this option since it only mention stdin, is that only common
-    # shell standard input ? If so, remove it since we won't support it (yet?).
-    "indented": {
-        "args": ("--indented/--no-indented",),
-        "kwargs": {
-            "default": None,
-            "help": (
-                "Use the indented syntax for input from stdin."
-            ),
-        }
-    },
     "source_map": {
         "args": ("--source-map/--no-source-map",),
         "kwargs": {
@@ -88,7 +101,51 @@ COMMAND_OPTIONS = {
             ),
         }
     },
+    "source_map_urls": {
+        "coerce_type": "choice",
+        "args": ("--source-map-urls",),
+        "kwargs": {
+            "metavar": "STRING",
+            "type": lazy_type(VALUE_CHOICES["source_map_urls"]),
+            "help": (
+                "How to link from source maps to source files."
+            ),
+            "show_default": True,
+            "default": VALUE_CHOICES["source_map_urls"][0],
+        }
+    },
+    "stop_on_error": {
+        "args": ("--stop-on-error/--no-stop-on-error",),
+        "kwargs": {
+            "default": True,
+            "help": (
+                "Don't compile more files once an error is encountered."
+            ),
+        }
+    },
+    "style": {
+        "coerce_type": "choice",
+        "args": ("--style",),
+        "kwargs": {
+            "metavar": "STRING",
+            "type": lazy_type(VALUE_CHOICES["style"]),
+            "help": (
+                "Output style."
+            ),
+            "show_default": True,
+            "default": VALUE_CHOICES["style"][0],
+        }
+    },
+    "update": {
+        "args": ("--update",),
+        "kwargs": {
+            "default": False,
+            "help": (
+                "Only compile out-of-date stylesheets."
+            ),
+        }
+    },
 }
 """
-Available click options, note than Click use the "args" item to name the value
+Available click options, note than Click use the "args" item to name the parameter.
 """

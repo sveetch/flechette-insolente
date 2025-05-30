@@ -25,14 +25,14 @@ def compile_command(context, **kwargs):
     destination = kwargs["destination"]
     style = kwargs["style"]
     load_path = kwargs["load_path"]
-    indented = kwargs["indented"]
+    # indented = kwargs["indented"]
     source_map = kwargs["source_map"]
 
     logger.debug("source: {}".format(source))
     logger.debug("destination: {}".format(destination))
     logger.debug("style: {}".format(style))
     logger.debug("load_path: {}".format(load_path))
-    logger.debug("indented: {}".format(indented))
+    # logger.debug("indented: {}".format(indented))
     logger.debug("source_map: {}".format(source_map))
 
     compiler = DartSassCompiler()
@@ -41,7 +41,7 @@ def compile_command(context, **kwargs):
             source,
             destination=destination,
             style=style,
-            indented=indented,
+            # indented=indented,
             source_map=source_map,
             load_path=load_path,
         )

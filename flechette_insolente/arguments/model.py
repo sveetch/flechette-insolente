@@ -26,7 +26,7 @@ class ArgumentsModel(ArgumentsValidationAbstract):
         The role of model is to gather every supported parameter in unique place that
         can be used to build CLI parameters or executable parameters.
 
-        Remember we implement this package CLI and the support of dart-sass executable
+        Remember we implement this CLI package and the support of dart-sass executable
         and they must match. Also we don't want to hardcode usage of Click types here
         since it may be optional.
 
@@ -88,7 +88,7 @@ class ArgumentsModel(ArgumentsValidationAbstract):
     @classmethod
     def get_available_parameters(cls):
         """
-        Get all available arguments for 'ArgumentsModel'.
+        Get all available parameters definitions for 'ArgumentsModel'.
         """
         parameters = {k: None for k, v in cls.COMMAND_ARGUMENTS.items()}
 
